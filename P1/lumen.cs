@@ -122,4 +122,7 @@ namespace P1
  *     POWER_MAX.
  * 4.  The 'dimness' variable is updated to be  the inverse of the 'power' 
  *     variable. As power decreases the dimness increases
+ * 5.  The 'brightness' variable can be negative (presumably the lumen obj
+ *     will be emitting shadows(?). There is no upper or lower bound for the
+ *     brightness of the object.
  */
