@@ -108,17 +108,19 @@ namespace P1
 			else
 				brightness -= BRIGHTNESS_DECREMENT;
 		}
+		public bool isActive()
+		{
+			return state == States.INACTIVE ? false : true;
+		}
 	}
 }
-
-
 /* IMPLEMENTATION INVARIANTS
  * 1.  glow() will return numbers in a smooth pattern from low to high power
  * 2.  The reset() function will only reset the lumen object to the original
  *     values if glow() has been called more than GLOWCOUNT_THRESHOLD times
  *     the state will be INACTIVE of the power is POWER_MIN, STABLE if the
  * 3.  power is POWER_MAX, and ERRATIC if it is between those two values. The
- *     value of power can never not be between or equal to POWER_MIN and 
+ *     value of power can never not be between or equal to POWER_MIN and
  *     POWER_MAX.
  * 4.  The 'dimness' variable is updated to be  the inverse of the 'power' 
  *     variable. As power decreases the dimness increases
