@@ -9,7 +9,6 @@ namespace P1
 	public class zappedErraticObject : Exception {
 		public zappedErraticObject(){}
 		public zappedErraticObject(string message) : base(message) { }
-
 	}
 	public class lumen
 	{
@@ -20,63 +19,60 @@ namespace P1
 			ERRATIC
 		}
 		private States state;
-    private int glowCount;
+		private int glowCount;
 		private readonly int size;
 		private readonly int initialPower;
 		private readonly int maxStablePower;
-		private readonly int initialBrightness;
 		private readonly int resetThreshold;
 		private readonly int materialCapacity; //how much power the object can hold per 1 size before becoming erratic
+		private readonly int maxStableBrightness;
 		private int dimness;
 		private int brightness;
 		private int power;
-		public lumen(int _size = 10, int _power = 100, int _materialCapacity = 10)
-		{
+		public lumen(int _size = 10, int _power = 100, int _materialCapacity = 10) {
 			state = States.STABLE;
-      size = _size;
-			power = initialPower = _power;
-			setBrightness();
-			initialBrightness = brightness;
-			resetThreshold = Math.Clamp(power, 1, power);
+			size = _size <= 1 ? 1 : _size;
+			power = initialPower = _power <= 0 ? 0 : _power;
+            setBrightness();
+			resetThreshold = size;
 			materialCapacity = _materialCapacity;
 			maxStablePower = materialCapacity * size;
-		}
+			maxStableBrightness = maxStablePower * size;
+        }
 		private void setBrightness() {
 			brightness = size * power;
-			dimness = initialBrightness / Math.Clamp(brightness, 1, brightness);
+			dimness = brightness > maxStableBrightness ? 0 : maxStableBrightness - brightness;
 		}
+		private void decPower() { power = power - 1 <= 0 ? 0 : power - 1; }
 		private void updateState() {
 			state = States.INACTIVE;
-			if (power >=0)
+			if (power > 0)
 				state = States.STABLE;
-			if (power >= materialCapacity * size)
+			if (power > materialCapacity * size)
 				state = States.ERRATIC;
 		}
-		public int glow()
-		{
+		public int glow() {
 			glowCount++;
-			power--;
-			updateState();
-			setBrightness();
+			decPower();
+            setBrightness();
+            updateState();
 			if (state == States.INACTIVE)
 				return dimness;
-			else if (state == States.STABLE)
+			if (state == States.STABLE)
 				return brightness;
-			else {
-				return power % 2 == 0 ? (maxStablePower * size) / 2 : brightness;
-			}
+			return power % 2 == 0 ? (maxStableBrightness + brightness) / 2 : brightness;
 		}
-		public bool reset()
-		{
+		public bool reset() {
 			updateState();
-			if (glowCount > resetThreshold && power > 0) {
+			if (glowCount >= resetThreshold && power > 0) {
+				glowCount = 0;
 				state = States.STABLE;
 				power = initialPower;
 				setBrightness();
 				return true;
 			}
 			else {
-				power--;
+				decPower();
 				setBrightness();
 				return false;
 			}
@@ -87,7 +83,7 @@ namespace P1
 			updateState();
 			if (state == States.ERRATIC)
 				throw new zappedErraticObject("Cannot zap an erratic lumen object!");
-			power += initialPower;
+			power += Math.Clamp(initialPower, 1, initialPower);
 			updateState();
 		}
 	}
