@@ -113,8 +113,26 @@ namespace P1
         {
             lumen test = new lumen(_power : 0);
             Assert.IsTrue(test.isActive());
-            test.glow();
+            int val1 = test.glow();
             Assert.IsFalse(test.isActive());
+            int val2 = test.glow();
+            Assert.AreEqual(val1, val2);
+        }
+        [TestMethod]
+        public void constructorArgsOOB(){
+            lumen test = new lumen(-10, -10, -10);
+            lumen test2 = new lumen(1, 0, 0);
+            int val1 = test.glow();
+            int val2 = test2.glow();
+            Assert.AreEqual(val1, val2);
+            val1 = test.glow();
+            val2 = test2.glow();
+            Assert.AreEqual(val1, val2);
+            test.zap();
+            test2.zap();
+            val1 = test.glow();
+            val2 = test2.glow();
+            Assert.AreEqual(val1, val2);
         }
     }
 }

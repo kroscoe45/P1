@@ -35,7 +35,7 @@ namespace P1
 			power = initialPower = _power <= 0 ? 0 : _power;
             setBrightness();
 			resetThreshold = size;
-			materialCapacity = _materialCapacity;
+			materialCapacity = _materialCapacity <= 0 ? 0 : _materialCapacity;
 			maxStablePower = materialCapacity * size;
 			maxStableBrightness = maxStablePower * size;
         }
@@ -83,7 +83,7 @@ namespace P1
 			updateState();
 			if (state == States.ERRATIC)
 				throw new zappedErraticObject("Cannot zap an erratic lumen object!");
-			power += Math.Clamp(initialPower, 1, initialPower);
+			power += initialPower < 1 ? 1 : initialPower;
 			updateState();
 		}
 	}
