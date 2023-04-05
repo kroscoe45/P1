@@ -53,14 +53,17 @@ namespace P1
 		}
 		public int glow() {
 			glowCount++;
-			decPower();
             setBrightness();
+			decPower();
             updateState();
 			if (state == States.INACTIVE)
 				return dimness;
 			if (state == States.STABLE)
 				return brightness;
 			return power % 2 == 0 ? (maxStableBrightness + brightness) / 2 : brightness;
+		}
+		public void reEvaluateState() {
+			updateState();
 		}
 		public bool reset() {
 			updateState();

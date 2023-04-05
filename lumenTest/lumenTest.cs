@@ -18,7 +18,7 @@ namespace P1
                 test.zap();
                 test.zap();
             }
-            catch(zappedErraticObject e)
+            catch(zappedErraticObject)
             {
                 pass = true;
             }
@@ -103,6 +103,7 @@ namespace P1
             for(int i = 0; i < 100; ++i){ Assert.AreEqual(val, inactiveGlowVal); }
             test.zap();
             Assert.IsTrue(test.isActive());
+			test.glow();
             int val2 = test.glow();
             Assert.AreNotEqual(val, val2);
             test.zap();
