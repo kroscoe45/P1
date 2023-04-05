@@ -1,4 +1,22 @@
-﻿using System;
+﻿/* CLASS INVARIANTS
+ * 1.  The state variable of a lumen object may only be either: INACTIVE(0), STABLE(1) or ERRATIC(2).
+ * 2.  All values stored in the class are initialized in the constructor.
+ * 3.  Default values are defined for size, power, and materialCapacity
+ * 4.  size and materialCapacity are stable and constant throughout the object's lifetime
+ * 5.  power decreases when glow is called
+ * 6.  State tracking and transitioning is handled by the class, not the user
+ * 7.  All objects are initialized as STABLE, even when power is 0, until a public function 
+ *     other than isActive() or isStable is called.
+ * 8.  Error processing: a zappedErraticObject exception is thrown when the user calls zap()
+ *     when the object is in the ERRATIC state. This is up to the user to catch and handle.
+ * 9.  dimness will be at it's maximum value when brightness is at it's minimum value.
+ * 10. The constructor will ensure that invalid numbers are not assigned to internal data.
+ *     The user may pass in garbage or invalid values to the constructor but the object will
+ *     be constructed with valid values in all fields.
+ */
+
+
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -60,7 +78,7 @@ namespace P1
 				return dimness;
 			if (state == States.STABLE)
 				return brightness;
-			return power % 2 == 0 ? (maxStableBrightness + brightness) / 2 : brightness;
+			return power % 2 == 0 ? maxStableBrightness : brightness;
 		}
 		public void reEvaluateState() {
 			updateState();
@@ -91,3 +109,15 @@ namespace P1
 		}
 	}
 }
+
+/* IMPLEMENTATION INVARIANTS
+ * 1.  State is stored as an enum to allow for extended functionality if needed.
+ *     state is computed and set only in the updateState() method.
+ * 2.  Size must be a positive number (or else object would not exist), power must be non-zero
+ *     (negative power functionality not defined), materialCapacity must be non-negative.
+ * 3.  When the state is erratic, the glow() method will return values alternating between the 
+ *     maximum stable brightness value and the real current brightness.
+ * 4.  updateState() will make the state inactive if the power is 0, stable if the power is
+ *     withing the bounds set by materialCapacity, and otherwise unstable.
+ * 5.  
+ */
