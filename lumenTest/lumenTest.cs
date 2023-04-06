@@ -1,3 +1,7 @@
+/* NAME: Kyle Roscoe
+ * LAST REVISED: 4-4-23
+ * REVISION HISTORY: https://github.com/kroscoe45/P1
+*/
 namespace P1
 {
     [TestClass]
@@ -134,6 +138,11 @@ namespace P1
             val1 = test.glow();
             val2 = test2.glow();
             Assert.AreEqual(val1, val2);
+        }
+        [TestMethod]
+        public void constructorWorking()
+        {
+            lumen test = new lumen(11, 101, 11);
         }
     }
 }

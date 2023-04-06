@@ -1,16 +1,18 @@
-﻿/* CLASS INVARIANTS
+﻿/* NAME: Kyle Roscoe
+ * LAST REVISED: 4-4-23
+ * REVISION HISTORY: https://github.com/kroscoe45/P1
+ * CLASS INVARIANTS
  * 1.  The state variable of a lumen object may only be either: INACTIVE(0), STABLE(1) or ERRATIC(2).
  * 2.  All values stored in the class are initialized in the constructor.
  * 3.  Default values are defined for size, power, and materialCapacity
  * 4.  size and materialCapacity are stable and constant throughout the object's lifetime
- * 5.  power decreases when glow is called
- * 6.  State tracking and transitioning is handled by the class, not the user
- * 7.  All objects are initialized as STABLE, even when power is 0, until a public function 
+ * 5.  State tracking and transitioning is handled by the class, not the user
+ * 6.  All objects are initialized as STABLE, even when power is 0, until a public function 
  *     other than isActive() or isStable is called.
- * 8.  Error processing: a zappedErraticObject exception is thrown when the user calls zap()
+ * 7.  Error processing: a zappedErraticObject exception is thrown when the user calls zap()
  *     when the object is in the ERRATIC state. This is up to the user to catch and handle.
- * 9.  dimness will be at it's maximum value when brightness is at it's minimum value.
- * 10. The constructor will ensure that invalid numbers are not assigned to internal data.
+ * 8.  dimness will be at it's maximum value when brightness is at it's minimum value.
+ * 9.  The constructor will ensure that invalid numbers are not assigned to internal data.
  *     The user may pass in garbage or invalid values to the constructor but the object will
  *     be constructed with valid values in all fields.
  */
@@ -42,7 +44,8 @@ namespace P1
 		private readonly int initialPower;
 		private readonly int maxStablePower;
 		private readonly int resetThreshold;
-		private readonly int materialCapacity; //how much power the object can hold per 1 size before becoming erratic
+        //how much power the object can hold per 1 unit of size before becoming erratic
+        private readonly int materialCapacity;
 		private readonly int maxStableBrightness;
 		private int dimness;
 		private int brightness;
@@ -80,9 +83,7 @@ namespace P1
 				return brightness;
 			return power % 2 == 0 ? maxStableBrightness : brightness;
 		}
-		public void reEvaluateState() {
-			updateState();
-		}
+		public void reEvaluateState() { updateState(); }
 		public bool reset() {
 			updateState();
 			if (glowCount >= resetThreshold && power > 0) {
@@ -92,14 +93,13 @@ namespace P1
 				setBrightness();
 				return true;
 			}
-			else {
-				decPower();
-				setBrightness();
-				return false;
-			}
+			decPower();
+			setBrightness();
+			return false;
 		}
 		public bool isActive() { return state != States.INACTIVE; }
 		public bool isStable() { return state == States.STABLE; }
+		//precondition: state is not erratic (exception will be thrown)
 		public void zap() {
 			updateState();
 			if (state == States.ERRATIC)
@@ -107,6 +107,7 @@ namespace P1
 			power += initialPower < 1 ? 1 : initialPower;
 			updateState();
 		}
+		//postcondition: object may now be active or unstable
 	}
 }
 
@@ -119,5 +120,4 @@ namespace P1
  *     maximum stable brightness value and the real current brightness.
  * 4.  updateState() will make the state inactive if the power is 0, stable if the power is
  *     withing the bounds set by materialCapacity, and otherwise unstable.
- * 5.  
  */
